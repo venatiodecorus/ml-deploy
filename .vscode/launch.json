@@ -24,7 +24,18 @@
       // "args": ["-cli"],
       "console": "integratedTerminal",
       "envFile": "${workspaceFolder}/.env",
-      "preLaunchTask": "go: build package"
+      "preLaunchTask": "go: build package",
+      "cwd": "${workspaceFolder}"
+    },
+    {
+      "name": "Launch Program",
+      "type": "go",
+      "request": "launch",
+      "mode": "debug",
+      "program": "${workspaceFolder}/src",
+      "envFile": "${workspaceFolder}/.env",
+      "output": "${workspaceFolder}/deploy",
+      "cwd": "${workspaceFolder}" // Set the working directory here
     }
   ]
 }

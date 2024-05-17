@@ -5,7 +5,10 @@
       "type": "go",
       "label": "go: build package",
       "command": "build",
-      "args": ["./src"],
+      "options": {
+        "cwd": "${workspaceFolder}/src"
+      },
+      "args": ["-o", "../deploy"],
       "problemMatcher": ["$go"],
       "group": {
         "kind": "build",
