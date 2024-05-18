@@ -11,7 +11,7 @@ import (
 
 func validate(config string) bool {
 	log.Print(os.Getwd())
-	tf, err := tfexec.NewTerraform(".", "terraform")
+	tf, err := tfexec.NewTerraform(".terraform", "terraform")
 	if err != nil {
 		log.Printf("failed to create Terraform: %s", err)
 		return false

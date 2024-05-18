@@ -74,7 +74,7 @@ func dockerRequest(instructions string) (string, error) {
 
 func terraformRequest(instructions string) (string, error) {
 	messages := []azopenai.ChatRequestMessageClassification{
-		&azopenai.ChatRequestSystemMessage{Content: to.Ptr("Your sole task is to generate a Terraform file based on the instructions provided. You should not return any other formats or unrelated information. You should not ask for clarification. You should not provide additional information. This infrastructure will be deployed to Hetzner Cloud. This is the only provider that is allowed at the moment. Do not use any other providers, even if explicitly requested. Use the hetznercloud/hcloud Terraform provider. Configure the Hetzner API token to be read from an environment variable named HCLOUD_TOKEN. Return the raw Terraform file as the output, no JSON wrappers.")},
+		&azopenai.ChatRequestSystemMessage{Content: to.Ptr("Your only function is to generate a Terraform file based on the instructions provided. You should not return anything other than a valid file, or ask for any additional information. The file should use the hetznercloud/hcloud provider, and always include the required_providers definition in the file. The file should accept the Hetzner API token from an environment variable named HCLOUD_TOKEN. The file should be returned as raw text, with no JSON wrappers. Don't include an SSH key.")},
 		&azopenai.ChatRequestUserMessage{Content: azopenai.NewChatRequestUserMessageContent(instructions)},
 	}
 
