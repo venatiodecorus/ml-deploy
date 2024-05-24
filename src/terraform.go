@@ -9,6 +9,7 @@ import (
 	tfjson "github.com/hashicorp/terraform-json"
 )
 
+// Validates, formats and saves the config file
 func validate(config string) bool {
 	log.Print(os.Getwd())
 	tf, err := tfexec.NewTerraform(".terraform", "terraform")
@@ -51,13 +52,12 @@ func validate(config string) bool {
 	return true
 }
 
-func deploy(config string) bool {
+func deploy() bool {
 	tf, err := tfexec.NewTerraform(".terraform", "terraform")
 	if err != nil {
 		log.Printf("failed to create Terraform: %s", err)
 		return false
 	}
-	// defer tf.Close()
 
 	err = tf.Init(context.Background())
 	if err != nil {

@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Test</title>
+    <!-- TODO Replace with static file -->
+    <script
+      src="https://unpkg.com/htmx.org@1.9.12"
+      integrity="sha384-ujb1lZYygJmzgSwoxRggbCHcjc0rB2XoQrxeTUQyRjrOnlCoYta87iKBWq3EsdM2"
+      crossorigin="anonymous"
+    ></script>
+    <script src="https://unpkg.com/htmx.org@1.9.12/dist/ext/json-enc.js"></script>
+  </head>
+  <body>
+    <p>Hello {{.Name}}</p>
+
+    <form>
+      <input type="textarea" name="instructions" hx-target="#response" />
+      <button hx-post="/deploy" hx-trigger="click" hx-ext="json-enc">
+        Submit
+      </button>
+    </form>
+
+    <div id="response">
+      <p>Deploying...</p>
+    </div>
+  </body>
+</html>

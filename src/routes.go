@@ -6,6 +6,8 @@ import (
 	"io"
 	"log"
 	"net/http"
+
+	"github.com/venatiodecorus/ml-deploy/src/frontend"
 )
 
 func handleRequests() {
@@ -17,6 +19,8 @@ func handleRequests() {
 	http.HandleFunc("/docker", dockerHandler)
 	http.HandleFunc("/terraform", terraformHandler)
 	http.HandleFunc("/deploy", deployHandler)
+
+	http.HandleFunc("/frontend", frontend.Index)
 
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }
@@ -60,9 +64,10 @@ func dockerHandler(w http.ResponseWriter, r *http.Request) {
 	query := requestData.Instructions
 
 	// Use the query value as needed
-	resp, err := dockerRequest(query)
+	// TODO Fix return type and response
+	docker(query)
 
-	ret := APIResponse{Output: resp}
+	ret := APIResponse{Output: "success"}
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(ret)
 }

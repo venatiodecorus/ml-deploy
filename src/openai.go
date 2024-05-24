@@ -13,20 +13,20 @@ import (
 )
 
 var (
-	client *azopenai.Client
+	oClient *azopenai.Client
 	clientOnce sync.Once
 	clientInitErr error
 )
 
 func GetClient() (*azopenai.Client, error) {
 	clientOnce.Do(func() {
-		client, clientInitErr = initializeClient()
+		oClient, clientInitErr = initializeClient()
 	})
 
 	if clientInitErr != nil {
 		return nil, clientInitErr
 	}
-	return client, nil
+	return oClient, nil
 }
 
 func initializeClient() (*azopenai.Client, error) {

@@ -26,5 +26,27 @@ func hetznerDeploy(instructions string) bool {
 	}
 
 	// Deploy the Terraform config
-	return deploy(trimmed)
+	return deploy()
+}
+
+func docker(instructions string) bool {
+	// Generate Dockerfile from instructions
+	config, err := dockerRequest(instructions)
+	if err != nil {
+		log.Printf("failed to generate Dockerfile: %s", err)
+		return false
+	}
+
+	// Clean up the returned config, OpenAI always wraps it in a JSON multi-line string
+	trimmed := strings.TrimPrefix(config, "```Dockerfile")
+	trimmed = strings.TrimSuffix(trimmed, "```")
+	trimmed = strings.TrimSpace(trimmed)
+
+	// Try to build
+	if err := dockerBuild(trimmed); err != nil {
+		log.Printf("failed to build Docker image: %s", err)
+		return false
+	}
+
+	return true
 }
