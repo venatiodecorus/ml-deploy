@@ -1,0 +1,18 @@
+{{ define "content"}}
+
+<h1>Docker</h1>
+<p>This is the Docker page.</p>
+
+<button
+  hx-post="/docker/list"
+  hx-trigger="click"
+  hx-ext="json-enc"
+  hx-target="#response"
+  class="btn"
+>
+  Submit
+</button>
+
+<div id="response"></div>
+
+{{ end }}

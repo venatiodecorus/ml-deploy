@@ -1,3 +1,4 @@
 .env
 deploy
 .terraform
+node_modules

@@ -16,11 +16,15 @@ func handleRequests() {
 	})
 
 	http.HandleFunc("/health", health)
-	http.HandleFunc("/docker", dockerHandler)
+	http.HandleFunc("/dockergen", dockerHandler)
 	http.HandleFunc("/terraform", terraformHandler)
 	http.HandleFunc("/deploy", deployHandler)
+	// http.HandleFunc("/dockerList", dockerListHandler)
 
-	http.HandleFunc("/frontend", frontend.Index)
+	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
+
+	// http.HandleFunc("/frontend", frontend.Index)
+	frontend.RegisterRoutes()
 
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }
@@ -71,6 +75,23 @@ func dockerHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(ret)
 }
+
+// func dockerListHandler(w http.ResponseWriter, r *http.Request) {
+// 	if r.Method != http.MethodGet {
+// 		http.Error(w, "Invalid request method", http.StatusMethodNotAllowed)
+// 		return
+// 	}
+
+// 	list,err := dockerList();
+// 	if err != nil {
+// 		http.Error(w, "Failed to list docker images", http.StatusInternalServerError)
+// 		return
+// 	}
+
+// 	// ret := APIResponse{Output: "success"}
+// 	w.Header().Set("Content-Type", "application/json")
+// 	json.NewEncoder(w).Encode(list)
+// }
 
 func terraformHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {

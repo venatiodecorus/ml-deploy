@@ -3,6 +3,8 @@ package main
 import (
 	"log"
 	"strings"
+
+	"github.com/venatiodecorus/ml-deploy/src/utils"
 )
 
 // Handle the entire deployment process, generate Terraform config from instructions, validate, then deploy.
@@ -43,7 +45,7 @@ func docker(instructions string) bool {
 	trimmed = strings.TrimSpace(trimmed)
 
 	// Try to build
-	if err := dockerBuild(trimmed); err != nil {
+	if err := utils.DockerBuild(trimmed); err != nil {
 		log.Printf("failed to build Docker image: %s", err)
 		return false
 	}

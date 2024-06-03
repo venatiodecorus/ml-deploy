@@ -1,0 +1,9 @@
+{{ define "imageList"}}
+<div>
+  <ul>
+    {{range $val := . }}
+    <li>{{index $val.RepoTags 0 }}</li>
+    {{end}}
+  </ul>
+</div>
+{{end}}

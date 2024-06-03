@@ -1,0 +1,25 @@
+{{ define "base" }}
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Test</title>
+    <!-- TODO Replace with static file -->
+    <script
+      src="https://unpkg.com/htmx.org@1.9.12"
+      integrity="sha384-ujb1lZYygJmzgSwoxRggbCHcjc0rB2XoQrxeTUQyRjrOnlCoYta87iKBWq3EsdM2"
+      crossorigin="anonymous"
+    ></script>
+    <link rel="stylesheet" href="/static/css/styles.build.css" />
+  </head>
+  <body>
+    {{ template "navbar" }}
+
+    <article
+      class="sm:container mx-auto px-5 bg-primary-content rounded prose prose-zinc"
+    >
+      {{ block "content" . }}{{ end }}
+    </article>
+  </body>
+</html>
+{{ end }}

@@ -15,6 +15,14 @@
         "isDefault": true
       },
       "detail": "go build"
+    },
+    {
+      "type": "npm",
+      "script": "build:css",
+      "group": "build",
+      "problemMatcher": [],
+      "label": "npm: build:css",
+      "detail": "npx postcss static/css/styles.css -o static/css/styles.build.css"
     }
   ]
 }

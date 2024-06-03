@@ -1,4 +1,4 @@
-package main
+package utils
 
 import (
 	"archive/tar"
@@ -8,6 +8,7 @@ import (
 	"os"
 
 	"github.com/docker/docker/api/types"
+	"github.com/docker/docker/api/types/image"
 	"github.com/docker/docker/client"
 )
 
@@ -40,7 +41,7 @@ func createTarball(dockerfileContent string) (io.Reader, error) {
 }
 
 // Docker doesn't have a validation command, so we try to build and iterate on any errors
-func dockerBuild(config string) error {
+func DockerBuild(config string) error {
 	cli, err := client.NewClientWithOpts(client.FromEnv)
 	if err != nil {
 		return err
@@ -68,4 +69,24 @@ func dockerBuild(config string) error {
 
 	_, err = io.Copy(os.Stdout, resp.Body)
 	return err
+}
+
+func DockerList() ([]image.Summary, error) {
+	cli, err := client.NewClientWithOpts(client.FromEnv)
+	if err != nil {
+		return nil, err
+	}
+	cli.NegotiateAPIVersion(context.Background())
+
+	resp, err := cli.ImageList(context.Background(), types.ImageListOptions{})
+	if err != nil {
+		return nil,err
+	}
+
+	// json, err := json.Marshal(resp)
+	// if err != nil {
+	// 	return nil,err
+	// }
+
+	return resp, nil
 }
