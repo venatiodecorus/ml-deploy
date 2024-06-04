@@ -1,8 +1,15 @@
 {{ define "content"}}
-<p>Hello {{.Name}}</p>
+<p>
+  Tell us what you would like to deploy, or how to modify your existing
+  deployment.
+</p>
 
 <form>
-  <input type="textarea" name="instructions" />
+  <textarea
+    class="textarea textarea-bordered"
+    placeholder="Instructions"
+    name="instructions"
+  ></textarea>
   <button
     hx-post="/deploy"
     hx-trigger="click"

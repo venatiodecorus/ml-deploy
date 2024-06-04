@@ -1,0 +1,9 @@
+{{ define "serverList"}}
+<div>
+  <ul>
+    {{range $val := . }}
+    <li>{{$val.Name}}</li>
+    {{end}}
+  </ul>
+</div>
+{{end}}

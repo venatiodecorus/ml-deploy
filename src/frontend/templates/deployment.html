@@ -1,0 +1,20 @@
+{{ define "content"}}
+
+<h1>My Deployment</h1>
+<p>Summary of your active infrastructure.</p>
+
+{{/*
+<button
+  hx-post="/docker/list"
+  hx-trigger="click"
+  hx-ext="json-enc"
+  hx-target="#response"
+  class="btn"
+>
+  Submit
+</button>
+*/}}
+
+<div hx-get="/servers/list" hx-trigger="load"></div>
+
+{{ end }}

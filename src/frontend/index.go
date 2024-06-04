@@ -7,17 +7,19 @@ import (
 	"os"
 	"path/filepath"
 
+	"github.com/venatiodecorus/ml-deploy/src/hetzner"
 	"github.com/venatiodecorus/ml-deploy/src/utils"
 )
 
 var templates map[string]*template.Template
 
 func Index(w http.ResponseWriter, r *http.Request) {
-	type Data struct {
-		Name string
-	}
+	// type Data struct {
+	// 	Name string
+	// }
 
-	err := templates["home.html"].ExecuteTemplate(w, "base", Data{Name: "Tony"})
+	// err := templates["home.html"].ExecuteTemplate(w, "base", Data{Name: "Tony"})
+	err := templates["home.html"].ExecuteTemplate(w, "base", nil)
 	if err != nil {
 		log.Printf("failed to execute template: %s", err)
 	}
@@ -38,6 +40,13 @@ func Docker(w http.ResponseWriter, r *http.Request) {
 
 }
 
+func Deploy(w http.ResponseWriter, r *http.Request) {
+	err := templates["deployment.html"].ExecuteTemplate(w, "base", nil)
+	if err != nil {
+		log.Printf("failed to execute template: %s", err)
+	}
+}
+
 func DockerListHandler(w http.ResponseWriter, r *http.Request) {
 	imageList,err := utils.DockerList()
 	if err != nil {
@@ -50,21 +59,19 @@ func DockerListHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func ServerListHandler(w http.ResponseWriter, r *http.Request) {
+	servers := hetzner.ServerList()
+	// if err != nil {
+	// 	log.Printf("failed to get image list: %s", err)
+	// }
+
+	err := templates["serverList.html"].ExecuteTemplate(w, "serverList", servers)
+	if err != nil {
+		log.Printf("failed to execute template: %s", err)
+	}
+}
+
 func RegisterRoutes() {
-    // if templates == nil {
-    //     templates = make(map[string]*template.Template)
-    // }
-
-    // layouts, err := filepath.Glob("./src/frontend/templates/*.html")
-    // if err != nil {
-    //     log.Fatal(err)
-    // }
-
-    // for _, layout := range layouts {
-	// 	// Apparently need to include any sub templates required by base.html here, for example navbar.html
-    //     templates[filepath.Base(layout)] = template.Must(template.ParseFiles(layout, "./src/frontend/templates/base.html", "./src/frontend/templates/navbar.html"))
-    // }
-
 	if templates == nil {
         templates = make(map[string]*template.Template)
     }
@@ -92,6 +99,8 @@ func RegisterRoutes() {
 
 	http.HandleFunc("/frontend", Index)
 	http.HandleFunc("/docker", Docker)
+	http.HandleFunc("/deployment", Deploy)
 
 	http.HandleFunc("/docker/list", DockerListHandler)
+	http.HandleFunc("/servers/list", ServerListHandler)
 }
