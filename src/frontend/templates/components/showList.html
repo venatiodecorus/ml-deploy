@@ -1,0 +1,46 @@
+{{ define "showList"}} {{ if . }}
+<div class="overflow-x-auto">
+  <table class="table table-xs">
+    <thead>
+      <tr>
+        {{/*
+        <th></th>
+        */}}
+        <th>Name</th>
+        <th>Type</th>
+        <th>Address</th>
+        <th>Mode</th>
+        <th>Provider Name</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{range $val := . }}
+      <tr>
+        {{/*
+        <th>1</th>
+        */}}
+        <td>{{ $val.Name }}</td>
+        <td>{{ $val.Type }}</td>
+        <td>{{ $val.Address }}</td>
+        <td>{{ $val.Mode}}</td>
+        <td>{{ $val.ProviderName}}</td>
+      </tr>
+      {{end}}
+    </tbody>
+    <tfoot>
+      <tr>
+        {{/*
+        <th></th>
+        */}}
+        <th>Name</th>
+        <th>Type</th>
+        <th>Address</th>
+        <th>Mode</th>
+        <th>Provider Name</th>
+      </tr>
+    </tfoot>
+  </table>
+</div>
+{{else}}
+<p>No resources found</p>
+{{end}} {{end}}

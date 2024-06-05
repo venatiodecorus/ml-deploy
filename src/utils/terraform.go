@@ -1,18 +1,36 @@
-package main
+package utils
 
 import (
 	"context"
 	"log"
 	"os"
+	"sync"
 
 	"github.com/hashicorp/terraform-exec/tfexec"
 	tfjson "github.com/hashicorp/terraform-json"
 )
 
+var (
+	tfClient *tfexec.Terraform
+	tfClientOnce sync.Once
+	tfClientInitErr error
+)
+
+func GetTFClient() (*tfexec.Terraform, error) {
+	tfClientOnce.Do(func() {
+		tfClient, tfClientInitErr = tfexec.NewTerraform(".terraform", "terraform")
+	})
+
+	if tfClientInitErr != nil {
+		return nil, tfClientInitErr
+	}
+	return tfClient, nil
+}
+
+
 // Validates, formats and saves the config file
-func validate(config string) bool {
-	log.Print(os.Getwd())
-	tf, err := tfexec.NewTerraform(".terraform", "terraform")
+func Validate(config string) bool {
+	tf, err := GetTFClient()
 	if err != nil {
 		log.Printf("failed to create Terraform: %s", err)
 		return false
@@ -52,8 +70,8 @@ func validate(config string) bool {
 	return true
 }
 
-func deploy() bool {
-	tf, err := tfexec.NewTerraform(".terraform", "terraform")
+func Deploy() bool {
+	tf, err := GetTFClient()
 	if err != nil {
 		log.Printf("failed to create Terraform: %s", err)
 		return false
@@ -72,4 +90,20 @@ func deploy() bool {
 	}
 
 	return true
+}
+
+func GetState() *tfjson.State {
+	tf, err := GetTFClient()
+	if err != nil {
+		log.Printf("failed to create Terraform: %s", err)
+		return nil
+	}
+
+	state, err := tf.Show(context.Background())
+	if err != nil {
+		log.Printf("failed to show state: %s", err)
+		return nil
+	}
+
+	return state
 }

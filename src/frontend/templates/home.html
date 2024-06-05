@@ -18,10 +18,14 @@
     class="btn"
   >
     Submit
+    <span class="loading loading-spinner loading-md htmx-indicator"></span>
   </button>
 </form>
 
 <div id="response">
   <p>Deploying...</p>
 </div>
+
+<h1>Terraform Plan</h1>
+<div id="terraform-plan" hx-get="/terraform/plan" hx-trigger="every 5s"></div>
 {{ end }}

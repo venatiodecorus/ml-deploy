@@ -71,6 +71,23 @@ func ServerListHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func TerraformPlanHandler(w http.ResponseWriter, r *http.Request) {
+	servers := utils.GetState()
+
+	// Return the state as JSON
+	// w.Header().Set("Content-Type", "application/json")
+	// json.NewEncoder(w).Encode(servers)
+
+	// if err != nil {
+	// 	log.Printf("failed to get image list: %s", err)
+	// }
+
+	err := templates["showList.html"].ExecuteTemplate(w, "showList", servers.Values.RootModule.Resources)
+	if err != nil {
+		log.Printf("failed to execute template: %s", err)
+	}
+}
+
 func RegisterRoutes() {
 	if templates == nil {
         templates = make(map[string]*template.Template)
@@ -103,4 +120,5 @@ func RegisterRoutes() {
 
 	http.HandleFunc("/docker/list", DockerListHandler)
 	http.HandleFunc("/servers/list", ServerListHandler)
+	http.HandleFunc("/terraform/plan", TerraformPlanHandler)
 }

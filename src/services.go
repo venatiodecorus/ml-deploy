@@ -23,12 +23,12 @@ func hetznerDeploy(instructions string) bool {
 	trimmed = strings.TrimSpace(trimmed)
 
 	// Validate the Terraform config
-	if !validate(trimmed) {
+	if !utils.Validate(trimmed) {
 		return false
 	}
 
 	// Deploy the Terraform config
-	return deploy()
+	return utils.Deploy()
 }
 
 func docker(instructions string) bool {
