@@ -8,29 +8,97 @@ import (
 	"net/http"
 
 	"github.com/venatiodecorus/ml-deploy/src/frontend"
+	"github.com/venatiodecorus/ml-deploy/src/utils"
 )
 
 func handleRequests() {
-	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprintf(w, "Hello World")
-	})
-
+	// Deprecated? Except /health maybe
 	http.HandleFunc("/health", health)
 	http.HandleFunc("/dockergen", dockerHandler)
 	http.HandleFunc("/terraform", terraformHandler)
 	http.HandleFunc("/deploy", deployHandler)
-	// http.HandleFunc("/dockerList", dockerListHandler)
-
+	// Serve static files
 	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
-
-	// http.HandleFunc("/frontend", frontend.Index)
+	// Serve pages & components
 	frontend.RegisterRoutes()
-
+	// User input
+	http.HandleFunc("/update", updateHandler)
+	http.HandleFunc("/destroy", destroyHandler)
+	// Start 'er up
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }
 
 func health(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "Healthy")
+}
+
+func updateHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodPost {
+		http.Error(w, "Invalid request method", http.StatusMethodNotAllowed)
+		return
+	}
+
+	body, err := io.ReadAll(r.Body)
+	if err != nil {
+		http.Error(w, "Failed to read request body", http.StatusBadRequest)
+		return
+	}
+	defer r.Body.Close()
+
+	type RequestData struct {
+		Instructions string `json:"instructions"`
+	}
+	var reqData RequestData
+	err = json.Unmarshal(body, &reqData)
+	if err != nil {
+		http.Error(w, "Failed to parse JSON", http.StatusBadRequest)
+		return
+	}
+
+	var plan string
+	plan, err = update(reqData.Instructions)
+	if err != nil {
+		http.Error(w, "Failed to update", http.StatusInternalServerError)
+		return
+	}
+
+	ret := APIResponse{Output: plan}
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(ret)
+}
+
+func destroyHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodGet {
+		http.Error(w, "Invalid request method", http.StatusMethodNotAllowed)
+		return
+	}
+
+	// body, err := io.ReadAll(r.Body)
+	// if err != nil {
+	// 	http.Error(w, "Failed to read request body", http.StatusBadRequest)
+	// 	return
+	// }
+	// defer r.Body.Close()
+
+	// type RequestData struct {
+	// 	Instructions string `json:"instructions"`
+	// }
+	// var reqData RequestData
+	// err = json.Unmarshal(body, &reqData)
+	// if err != nil {
+	// 	http.Error(w, "Failed to parse JSON", http.StatusBadRequest)
+	// 	return
+	// }
+
+	err := utils.Destroy()
+	if !err {
+		http.Error(w, "Failed to destroy", http.StatusInternalServerError)
+		return
+	}
+
+	ret := APIResponse{Output: "Infra destroyed"}
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(ret)
 }
 
 type APIResponse struct {

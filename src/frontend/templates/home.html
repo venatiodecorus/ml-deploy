@@ -11,11 +11,20 @@
     name="instructions"
   ></textarea>
   <button
-    hx-post="/deploy"
+    hx-post="/update"
     hx-trigger="click"
     hx-ext="json-enc"
     hx-target="#response"
     class="btn"
+  >
+    Submit
+    <span class="loading loading-spinner loading-md htmx-indicator"></span>
+  </button>
+  <button
+    hx-get="/destroy"
+    hx-trigger="click"
+    hx-target="#response"
+    class="btn btn-warning"
   >
     Submit
     <span class="loading loading-spinner loading-md htmx-indicator"></span>
@@ -26,6 +35,6 @@
   <p>Deploying...</p>
 </div>
 
-<h1>Terraform Plan</h1>
-<div id="terraform-plan" hx-get="/terraform/plan" hx-trigger="every 5s"></div>
+<h1>Terraform State</h1>
+<div id="terraform-plan" hx-get="/terraform/state" hx-trigger="every 5s"></div>
 {{ end }}

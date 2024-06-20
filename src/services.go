@@ -52,3 +52,35 @@ func docker(instructions string) bool {
 
 	return true
 }
+
+// Creates or updates an existing deployment based on the instructions provided.
+// Do we need to handle the case where the deployment doesn't exist yet?
+func update(instructions string) (string, error) {
+	// Generate Terraform config from instructions
+	config, err := terraformRequest(instructions)
+	if err != nil {
+		log.Printf("failed to generate Terraform config: %s", err)
+		return "",err
+		// return false
+	}
+
+	// Clean up the returned config, OpenAI always wraps it in a JSON multi-line string
+	trimmed := strings.TrimPrefix(config, "```hcl")
+	trimmed = strings.TrimSuffix(trimmed, "```")
+	trimmed = strings.TrimSpace(trimmed)
+
+	// Validate the Terraform config
+	if !utils.Validate(trimmed) {
+		return "",err
+		// return false
+	}
+
+	// Deploy the Terraform config
+	plan, err := utils.GetPlan()
+	if err != nil {
+		log.Printf("failed to get plan: %s", err)
+		return "",err
+	}
+
+	return plan, nil
+}

@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"bytes"
 	"context"
 	"log"
 	"os"
@@ -106,4 +107,42 @@ func GetState() *tfjson.State {
 	}
 
 	return state
+}
+
+func GetPlan() (string,error) {
+	tf, err := GetTFClient()
+	if err != nil {
+		log.Printf("failed to create Terraform: %s", err)
+		return "",err
+	}
+
+	// Store the plan in a variable
+	var buf bytes.Buffer
+
+	plan, err := tf.PlanJSON(context.Background(), &buf)
+	if err != nil {
+		log.Printf("failed to show plan: %s", err)
+		return "",err
+	}
+
+	if !plan {
+		return "",err
+	}
+	return buf.String(),nil
+}
+
+func Destroy() bool {
+	tf, err := GetTFClient()
+	if err != nil {
+		log.Printf("failed to create Terraform: %s", err)
+		return false
+	}
+
+	err = tf.Destroy(context.Background())
+	if err != nil {
+		log.Printf("failed to destroy Terraform: %s", err)
+		return false
+	}
+
+	return true
 }

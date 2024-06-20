@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"log"
 	"os"
 	"sync"
@@ -59,7 +58,7 @@ func makeRequest(messages []azopenai.ChatRequestMessageClassification) (string, 
 		return "",err
 	}
 
-	fmt.Printf("Response: %s", *resp.Choices[0].Message.Content)
+	// fmt.Printf("Response: %s", *resp.Choices[0].Message.Content)
 	return *resp.Choices[0].Message.Content, nil
 }
 
